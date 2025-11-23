@@ -47,6 +47,9 @@ MAX_WAIT_TIME_SECONDS: A failsafe timer for synchronization.
 TARGET_SERVICE_NAME and associated driver names: Used to control the state of the target service/driver (HoYoProtect).
 
 
+Once that's done, you may build your executable! Find it in __bin\Release\net8.0__
+
+
 # How to Use
 
 **Run as Administrator**
