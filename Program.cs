@@ -264,7 +264,7 @@ public class ChronoVaultActivator
             Environment.Exit(1);
         }
 
-        Console.WriteLine("\n⏳ **Mock-Auth Window**: Waiting for audio cue or failsafe timer...");
+        Console.WriteLine("\n**Mock-Auth Window**: Waiting for audio cue or failsafe timer...");
 
         DetectDefaultSpeakerLoopback();
 
@@ -272,7 +272,8 @@ public class ChronoVaultActivator
 
         RestoreNetwork(adapterName);
 
-        Console.WriteLine("\n✅ The game process is now running, blinded, and connected. Zeta victory.");
+        Console.WriteLine("\nThe game process is now running, blinded, and connected. victory.");
         Console.WriteLine("[!] Script completed. The game process remains running.");
     }
+
 }
