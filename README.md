@@ -11,12 +11,12 @@ Visual Studio 2022 (Community, Professional, or Enterprise edition).
 ## Project Setup
 The project is configured as a .NET 8.0 Console Application.
 
-1. Download and Open
+### 1. Download and Open
 Download or clone the project files (including HoesYo.sln, HoesYo.csproj, and Program.cs) to your PC.
 
 Open Visual Studio 2022.
 
-2. Dependency Management
+### 2. Dependency Management
 The project uses the following NuGet packages, which should be automatically restored by Visual Studio:
 
 NAudio (Version 2.2.1): Used for detecting audio output from the speakers/loopback device to synchronize launch actions.
@@ -29,26 +29,11 @@ Go to Project > Manage NuGet Packages... > Console. The required packages will b
 
 Alternatively, open a command prompt in the solution directory and run: dotnet restore
 
-3. Configuration
-***You must configure the path to the application in Program.cs.***
+### 3. Build
 
-Open the Program.cs file.
+You may build your own executable! Find it in __bin\Release\net8.0__
 
-Locate the GAME_PATH constant near the top and set it to the correct path for your game executable:
-
-private const string GAME_PATH = @"D:\Games\HoYoPlay\games\Genshin Impact game\GenshinImpact.exe"; // <--- CHANGE THIS PATH
-
-You can also adjust the timing and audio synchronization constants:
-
-SOUND_THRESHOLD: The audio level used to trigger the synchronization completion.
-
-MAX_WAIT_TIME_SECONDS: A failsafe timer for synchronization.
-
-TARGET_SERVICE_NAME and associated driver names: Used to control the state of the target service/driver (HoYoProtect).
-
-
-Once that's done, you may build your executable! Find it in __bin\Release\net8.0__
-
+(or just go use the one in releases)
 
 # How to Use
 
