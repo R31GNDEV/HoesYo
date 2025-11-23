@@ -11,7 +11,8 @@ using System.Security;
 
 public class ChronoVaultActivator
 {
-    private const string GAME_PATH = @"D:\Games\HoYoPlay\games\Genshin Impact game\GenshinImpact.exe";
+    private static string GAME_PATH;
+
     private const double SOUND_THRESHOLD = 0.00001;
     private const int MAX_WAIT_TIME_SECONDS = 60;
     private const int SAMPLE_RATE = 44100;
@@ -39,7 +40,7 @@ public class ChronoVaultActivator
             Console.WriteLine("Elevating permissions to administrator...");
             string script = Process.GetCurrentProcess().MainModule.FileName;
             ShellExecute(IntPtr.Zero, "runas", script, null, null, 1);
-            return false; 
+            return false;
         }
         return true;
     }
@@ -231,6 +232,57 @@ public class ChronoVaultActivator
         }
     }
 
+    private static string FindGamePath()
+    {
+        Console.WriteLine("\n[*] Initiating Multi-Drive Reconnaissance for Target Path...");
+
+        const string GAME_ROOT = "Genshin Impact";
+        const string GAME_SUBDIR = @"Genshin Impact Game";
+        const string EXECUTABLE_NAME = "GenshinImpact.exe";
+
+        string[] commonBasePaths = new string[]
+        {
+            Path.Combine("Program Files", GAME_ROOT), // e.g., C:\Program Files\Genshin Impact
+            Path.Combine("Program Files (x86)", GAME_ROOT), // e.g., C:\Program Files (x86)\Genshin Impact
+            GAME_ROOT // For direct root installations, e.g., D:\Genshin Impact
+        };
+
+        foreach (DriveInfo drive in DriveInfo.GetDrives())
+        {
+            if (drive.IsReady && drive.DriveType == DriveType.Fixed)
+            {
+                Console.WriteLine($"[->] Checking Drive: {drive.Name}");
+
+                foreach (string basePath in commonBasePaths)
+                {
+                    string fullPathToRoot = Path.Combine(drive.RootDirectory.FullName, basePath);
+                    string finalPath = Path.Combine(fullPathToRoot, GAME_SUBDIR, EXECUTABLE_NAME);
+
+                    try
+                    {
+                        if (File.Exists(finalPath))
+                        {
+                            Console.WriteLine($"[✓] Path found: {finalPath}");
+                            return finalPath;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[!] Skipping path check due to error on {finalPath}: {ex.GetType().Name}");
+                    }
+                }
+            }
+        }
+
+        const string HARDCODED_PATH = @"D:\Games\HoYoPlay\games\Genshin Impact game\GenshinImpact.exe";
+        if (File.Exists(HARDCODED_PATH))
+        {
+            Console.WriteLine($"[--] Path not found automatically. Falling back to original known path: {HARDCODED_PATH}");
+            return HARDCODED_PATH;
+        }
+
+        throw new FileNotFoundException($"[!!] CRITICAL: Game executable '{EXECUTABLE_NAME}' not found after exhaustive multi-drive search. Manual path setting is required.");
+    }
 
     public static void Main(string[] args)
     {
@@ -239,7 +291,19 @@ public class ChronoVaultActivator
             return;
         }
 
-        Console.WriteLine("\n[***] (C# v2.0 - WMI Stealth) [***]");
+        Console.WriteLine("\n[***] (C# v2.3 - Multi-Drive Stealth) [***]");
+
+        try
+        {
+            GAME_PATH = FindGamePath();
+        }
+        catch (FileNotFoundException ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine("[!!] Aborting due to path failure...");
+            Environment.Exit(1);
+            return;
+        }
 
         ExecuteServiceNeutering();
 
@@ -264,7 +328,7 @@ public class ChronoVaultActivator
             Environment.Exit(1);
         }
 
-        Console.WriteLine("\n**Mock-Auth Window**: Waiting for audio cue or failsafe timer...");
+        Console.WriteLine("\n⏳ **Mock-Auth Window**: Waiting for audio cue or failsafe timer...");
 
         DetectDefaultSpeakerLoopback();
 
@@ -272,8 +336,7 @@ public class ChronoVaultActivator
 
         RestoreNetwork(adapterName);
 
-        Console.WriteLine("\nThe game process is now running, blinded, and connected. victory.");
+        Console.WriteLine("\nThe game process is now running, blinded, and connected. Bypassed.");
         Console.WriteLine("[!] Script completed. The game process remains running.");
     }
-
 }
